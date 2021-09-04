@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+	<meta charset='UTF-8'>
+	<title>Color symmetry tool</title>
+  <link rel="stylesheet" href="https://unpkg.com/normalize.css@8.0.1/normalize.css">
+  <link rel="stylesheet" href="fa-all.min.css">
+  <style>
+    html {
+      background: #f4f4f4;
+    }
+
+    body {
+      font: 2vh/2vh sans-serif;
+    }
+
+    div {
+      position: absolute;
+    }
+
+    h1 {
+      font-size: 100%;
+    }
+
+    h1:not(:first-child) {
+      margin-top: 5vh;
+    }
+
+    h2 {
+      font-size: 100%;
+      font-weight: normal;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #left {
+      position: relative;
+      top: 2vh;
+      left: 2vw;
+      width: 46vw;
+      height: 96vh;
+    }
+
+    #right {
+      top: 2vh;
+      left: 52vw;
+      width: 46vw;
+      height: 96vh;
+    }
+
+    #right h2 {
+      margin-top: 5vh;
+    }
+
+    #primary_colors,
+    #final_ranking {
+      position: relative;
+      width: calc(100% + 1vh);
+      height: 6vh;
+      margin: -0.5vh;
+      overflow: hidden;
+    }
+
+    #primary_colors div,
+    #final_ranking div{
+      position: relative;
+      display: inline-block;
+      width: 5vh;
+      height: 5vh;
+      margin: 0.5vh;
+      margin-right: 0.5vw;
+      background: #f00;
+      cursor: pointer;
+    }
+
+    #primary_colors div.active {
+      box-shadow: 0 0 0.5vh 0.05vh rgba(0, 0, 0, 1);
+      color: #00a5ff;
+    }
+
+    #bgfg {
+      position: relative;
+      margin-top: 2vh;
+    }
+
+    #bgfg label {
+      margin-right: 1vw;
+    }
+
+    #bgfg input,
+    .criterion input[type=checkbox] {
+      margin-left: 0.1em;
+      vertical-align: 0.1em;
+      transform: scale(1.2);
+    }
+
+    .criterion {
+      margin-top: 5vh;
+      height: 13vh;
+      position: initial;
+    }
+
+    .criterion input[type=range] {
+      position: absolute;
+      left: 5vw;
+      width: 35vw;
+    }
+
+    .criterion ol {
+      padding: 0;
+      position: absolute;
+      left: 5vw;
+      width: 35vw;
+    }
+
+    .criterion li {
+      margin: 0;
+      padding: 0;
+      display: inline-block;
+      width: 11.6666vw;
+      text-align: center;
+    }
+
+    .criterion li:first-child {
+      text-align: left;
+    }
+
+    .criterion li:last-child {
+      text-align: right;
+    }
+
+    .criterion li.active {
+      text-shadow: 0 0 3px rgba(0, 0, 0, 1);
+    }
+
+    .final-ranking {
+      text-align: center;
+      border-radius: 0.75vmin;
+    }
+
+    .final-ranking i {
+      font-size: 3.6vh;
+      line-height: 5vh;
+    }
+  </style>
+</head>
+<body>
+  <div id="left">
+    <h1>Primary color</h1>
+    <div id="primary_colors"></div>
+    <div id="bgfg">
+      <label><input id="bgfg_bg" name="bgfg" type="radio" value="bg" checked> Background</label>
+      <label><input id="bgfg_fg" name="bgfg" type="radio" value="fg"> Foreground</label>
+    </div>
+    <div id="criterion_user_preference" class="criterion">
+      <h2>User preference criterion</h2>
+      <label><input id="criterion_user_preference_enabled" type="checkbox" checked></label>
+      <input type="range" min="1" max="3" id="criterion_user_preference_level">
+      <ol>
+        <li>Low</li
+        ><li>Medium</li
+      ><li>High</li>
+      </ol>
+    </div>
+    <div id="criterion_user_attention" class="criterion">
+      <h2>User attention drawing criterion</h2>
+      <label><input id="criterion_user_attention_enabled" type="checkbox" checked></label>
+      <input type="range" min="1" max="3" id="criterion_user_attention_level">
+      <ol>
+        <li>Low</li
+        ><li>Medium</li
+      ><li>High</li>
+      </ol>
+    </div>
+    <div id="criterion_wcag_contrast" class="criterion">
+      <h2>WCAG contrast criterion</h2>
+      <label><input id="criterion_wcag_contrast_enabled" type="checkbox" checked></label>
+      <input type="range" min="1" max="3" id="criterion_wcag_contrast_level">
+      <ol>
+        <li></li
+        ><li>AA</li
+      ><li>AAA</li>
+      </ol>
+    </div>
+  </div>
+  <div id="right">
+    <h1>Final ranking</h1>
+    <div id="final_ranking"></div>
+    <h2>Criteria and research explanation</h2>
+  </div>
+  <script>
+    const state = {
+      primaryColors: primaryColors(),
+      background: true,
+      criteria: {
+        userPreferenceEnabled: true,
+        userPreferenceLevel: 3,
+        userAttentionEnabled: true,
+        userAttentionLevel: 2,
+        wcagContrastEnabled: true,
+        wcagContrastLevel: 1
+      }
+    };
+
+    init();
+
+    function init() {
+      document.addEventListener("click", onClickDispatcher);
+      document.querySelectorAll(".criterion input[type=range]").forEach(el => el.addEventListener("input", onCriterionInput));
+
+      drawPrimaryColors();
+      document.getElementById("bgfg_bg").checked = state.background;
+      document.getElementById("bgfg_fg").checked = !state.background;
+      drawCriteria();
+    }
+
+    function onClickDispatcher(event) {
+      const id = event.target.id;
+      const parentId = event.target.parentNode.id;
+      const grandParentId = event.target.parentNode ? event.target.parentNode.parentNode.id : "";
+
+      if (parentId === "primary_colors") {
+        onPrimaryColorClick(event);
+      } else if (parentId === "bgfg" || grandParentId === "bgfg") {
+        setTimeout(() => {
+          state.background = document.getElementById("bgfg_bg").checked;
+          drawFinalRanking();
+        }, 1); // setTimeout used so .checked property gets set
+      } else if (event.target.type === "checkbox" && id.indexOf("criterion") !== -1) {
+        setTimeout(() => {
+          switch (event.target.id) {
+            case "criterion_user_preference_enabled":
+              state.criteria.userPreferenceEnabled = event.target.checked;
+              break;
+            case "criterion_user_attention_enabled":
+              state.criteria.userAttentionEnabled = event.target.checked;
+              break;
+            case "criterion_wcag_contrast_enabled":
+              state.criteria.wcagContrastEnabled = event.target.checked;
+              break;
+          }
+          drawFinalRanking();
+        }, 1); // setTimeout used so .checked property gets set
+      }
+    }
+
+    function onCriterionInput(e) {
+      switch (e.target.id) {
+        case "criterion_user_preference_level":
+          state.criteria.userPreferenceLevel = 1 * e.target.value;
+          break;
+        case "criterion_user_attention_level":
+          state.criteria.userAttentionLevel = 1 * e.target.value;
+          break;
+        case "criterion_wcag_contrast_level":
+          state.criteria.wcagContrastLevel = 1 * e.target.value;
+          break;
+      }
+      drawCriteria();
+      drawFinalRanking();
+    }
+
+    function dictionary() {
+      return `
+black=0,0,0
+gray=119,119,119
+white=255,255,255
+red=255,0,0
+orange=255,125,0
+yellow=255,255,0
+green=0,255,0
+blue=0,0,255
+violet=125,0,255
+      `.trim()
+        .split("\n")
+        .reduce((colors, line) => {
+          const l = line.split("=");
+          colors[l[0]] = l[1];
+          return colors;
+        }, {})
+    }
+
+    function applyDictionary(str) {
+      const dic = dictionary();
+      Object.keys(dic).forEach(key => {
+        str = str.replaceAll(key, dic[key]);
+      });
+      return str;
+    }
+
+    function primaryColors() {
+// r,g,b
+      return applyDictionary(`
+black
+gray
+white
+red
+orange
+yellow
+green
+blue
+violet
+        `).trim()
+        .split("\n")
+        .reduce((colors, line) => {
+          const l = line.split(",");
+          colors.push([1.0 * l[0], 1.0 * l[1], 1.0 * l[2]]);
+          return colors;
+        }, []);
+    }
+
+    function drawPrimaryColors() {
+      let html = "";
+      state.primaryColors.forEach(color => {
+        html += `<div style="background: rgb(${color[0]}, ${color[1]}, ${color[2]})"></div>`;
+      });
+      document.getElementById("primary_colors").innerHTML = html;
+
+      document.querySelector("#primary_colors div:first-child").click();
+    }
+
+    function onPrimaryColorClick(event) {
+      document.querySelectorAll('#primary_colors div').forEach(div => div.classList.remove("active"));
+      event.target.classList.add("active");
+
+      const index = [...event.target.parentNode.querySelectorAll("div")].indexOf(event.target);
+      state.activePrimaryColor = state.primaryColors[index];
+
+      drawFinalRanking();
+    }
+
+    function drawCriteria() {
+      document.getElementById("criterion_user_preference_level").value = state.criteria.userPreferenceLevel;
+      document.getElementById("criterion_user_preference_enabled").checked = state.criteria.userPreferenceEnabled;
+      document.getElementById("criterion_user_attention_level").value = state.criteria.userAttentionLevel;
+      document.getElementById("criterion_user_attention_enabled").checked = state.criteria.userAttentionEnabled;
+      document.getElementById("criterion_wcag_contrast_level").value = state.criteria.wcagContrastLevel;
+      document.getElementById("criterion_wcag_contrast_enabled").checked = state.criteria.wcagContrastEnabled;
+
+      document.querySelectorAll(".criterion li").forEach(el => el.classList.remove("active"));
+      document.querySelector(`#criterion_user_preference li:nth-child(${state.criteria.userPreferenceLevel})`).classList.add("active");
+      document.querySelector(`#criterion_user_attention li:nth-child(${state.criteria.userAttentionLevel})`).classList.add("active");
+      document.querySelector(`#criterion_wcag_contrast li:nth-child(${state.criteria.wcagContrastLevel})`).classList.add("active");
+    }
+
+    function finalRanking() {
+      // TODO use state to calculate final ranking
+      console.log(state);
+      return applyDictionary(`
+black
+green
+yellow
+blue
+gray
+violet
+red
+orange
+      `).trim()
+      .split("\n")
+      .reduce((colors, line) => {
+          const l = line.split(",");
+          colors.push([1.0 * l[0], 1.0 * l[1], 1.0 * l[2]]);
+          return colors;
+        }, []);
+    }
+
+    function drawFinalRanking() {
+      let html = "";
+      state.finalRanking = finalRanking();
+      state.finalRanking.forEach(color => {
+        html += `<div class="final-ranking" style="background: rgb(${color[0]}, ${color[1]}, ${color[2]});
+            color: rgb(${state.activePrimaryColor[0]}, ${state.activePrimaryColor[1]}, ${state.activePrimaryColor[2]})"><i class="fa fa-envelope"></i></div>`;
+      });
+      document.getElementById("final_ranking").innerHTML = html;
+    }
+  </script>
+</body>
+</html>
