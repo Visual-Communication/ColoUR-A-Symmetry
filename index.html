@@ -2,7 +2,7 @@
 <html lang='en'>
 <head>
 	<meta charset='UTF-8'>
-	<title>Color symmetry tool</title>
+	<title>Color A/Symmetry tool</title>
   <link rel="stylesheet" href="https://unpkg.com/normalize.css@8.0.1/normalize.css">
   <link rel="stylesheet" href="fa-all.min.css">
   <style>
@@ -11,7 +11,7 @@
     }
 
     body {
-      font: 2vh/2vh sans-serif;
+      font: 4.5vh/2.5vh sans-serif;
     }
 
     div {
@@ -20,10 +20,20 @@
 
     h1 {
       font-size: 100%;
+      font-weight: normal;
     }
 
     h1:not(:first-child) {
       margin-top: 5vh;
+    }
+
+    h1.step {
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    h1.step:not(:first-child) {
+      margin-top: 7.5vh;
     }
 
     h2 {
@@ -44,7 +54,7 @@
     }
 
     #right {
-      top: 2vh;
+      top: 16vh;
       left: 52vw;
       width: 46vw;
       height: 96vh;
@@ -58,25 +68,39 @@
     #final_ranking {
       position: relative;
       width: calc(100% + 1vh);
-      height: 6vh;
+      height: 11vh;
       margin: -0.5vh;
       overflow: hidden;
+    }
+
+    #final_ranking {
+    	margin-top: 5vh;
     }
 
     #primary_colors div,
     #final_ranking div{
       position: relative;
       display: inline-block;
-      width: 5vh;
-      height: 5vh;
+      width: 10vh;
+      height: 10vh;
       margin: 0.5vh;
       margin-right: 0.5vw;
-      background: #f00;
       cursor: pointer;
     }
 
+    #final_ranking div {
+    	width: 5.25vw;
+    	margin: 0.25vw;
+    }
+
+    #primary_colors div {
+        box-shadow: 0 0 0.5vh 0.05vh rgba(0, 0, 0, 0.35);
+    	width: 8vh;
+    	height: 8vh;
+    }
+
     #primary_colors div.active {
-      box-shadow: 0 0 0.5vh 0.05vh rgba(0, 0, 0, 1);
+      box-shadow: 0 0 0.65vh 0.15vh rgba(0, 0, 0, 1);
       color: #00a5ff;
     }
 
@@ -97,7 +121,7 @@
     }
 
     .criterion {
-      margin-top: 5vh;
+      margin-top: 3vh;
       height: 13vh;
       position: initial;
     }
@@ -108,14 +132,19 @@
       width: 35vw;
     }
 
-    .criterion ol {
+    .criterion ol, ol.ranking {
       padding: 0;
       position: absolute;
       left: 5vw;
       width: 35vw;
     }
 
-    .criterion li {
+    ol.ranking {
+      left: 0;
+      width: 46vw;
+    }
+
+    .criterion li, ol.ranking li {
       margin: 0;
       padding: 0;
       display: inline-block;
@@ -123,16 +152,21 @@
       text-align: center;
     }
 
-    .criterion li:first-child {
+    ol.ranking li {
+    	width: 15.3333vw;
+    }
+
+    .criterion li:first-child, ol.ranking li:first-child {
       text-align: left;
     }
 
-    .criterion li:last-child {
+    .criterion li:last-child, ol.ranking li:last-child {
       text-align: right;
     }
 
     .criterion li.active {
-      text-shadow: 0 0 3px rgba(0, 0, 0, 1);
+      /*text-shadow: 0 0 3px rgba(0, 0, 0, 1);*/
+      font-weight: bold;
     }
 
     .final-ranking {
@@ -141,66 +175,105 @@
     }
 
     .final-ranking i {
-      font-size: 3.6vh;
-      line-height: 5vh;
+      font-size: 7vh;
+      line-height: 10vh;
+    }
+
+    #example_text {
+    	position: relative;
+    	margin: 10vh 0 5vh 0;
+    	font-size: 8vh;
+    	padding: 5vh 0;
+    	text-align: center;
+    }
+
+    h1.title {
+    	background: #e1e1e1;
+    	margin: 4vh 1vw;
+    	padding: 2vh 1vw;
+    	font-size: 4vh;
+    	line-height: 4vh;
+    }
+
+    #logo {
+    	float: left;
+    	height: 6vh;
+    	margin: -1vh 0.5em 0 0;
     }
   </style>
 </head>
 <body>
+  <h1 class="title"><img id="logo" src="logo.png" alt=""/>ColoUR A/Symmetry Tool</h1>
   <div id="left">
-    <h1>Primary color</h1>
+    <h1 class="step">Step 1: Choose primary color</h1>
+    <h1>Color</h1>
     <div id="primary_colors"></div>
-    <div id="bgfg">
+    <!--div id="bgfg">
       <label><input id="bgfg_bg" name="bgfg" type="radio" value="bg" checked> Background</label>
       <label><input id="bgfg_fg" name="bgfg" type="radio" value="fg"> Foreground</label>
-    </div>
-    <div id="criterion_user_preference" class="criterion">
-      <h2>User preference criterion</h2>
-      <label><input id="criterion_user_preference_enabled" type="checkbox" checked></label>
-      <input type="range" min="1" max="3" id="criterion_user_preference_level">
-      <ol>
-        <li>Low</li
-        ><li>Medium</li
-      ><li>High</li>
-      </ol>
-    </div>
-    <div id="criterion_user_attention" class="criterion">
-      <h2>User attention drawing criterion</h2>
-      <label><input id="criterion_user_attention_enabled" type="checkbox" checked></label>
-      <input type="range" min="1" max="3" id="criterion_user_attention_level">
-      <ol>
-        <li>Low</li
-        ><li>Medium</li
-      ><li>High</li>
-      </ol>
-    </div>
+    </div-->
+    <h1 class="step">Step 2: Set criteria weights</h1>
     <div id="criterion_wcag_contrast" class="criterion">
-      <h2>WCAG contrast criterion</h2>
+      <h2>Color contrast - WCAG standard</h2>
       <label><input id="criterion_wcag_contrast_enabled" type="checkbox" checked></label>
       <input type="range" min="1" max="3" id="criterion_wcag_contrast_level">
       <ol>
         <li></li
         ><li>AA</li
-      ><li>AAA</li>
+        ><li>AAA</li>
+      </ol>
+    </div>
+    <div id="criterion_user_preference" class="criterion">
+      <h2>Subjective preference</h2>
+      <label><input id="criterion_user_preference_enabled" type="checkbox" checked></label>
+      <input type="range" min="1" max="3" id="criterion_user_preference_level">
+      <ol>
+        <li>Low</li
+        ><li>Medium</li
+        ><li>High</li>
+      </ol>
+    </div>
+    <div id="criterion_user_attention" class="criterion">
+      <h2>Objective preference</h2>
+      <label><input id="criterion_user_attention_enabled" type="checkbox" checked></label>
+      <input type="range" min="1" max="3" id="criterion_user_attention_level">
+      <ol>
+        <li>Low</li
+        ><li>Medium</li
+        ><li>High</li>
       </ol>
     </div>
   </div>
   <div id="right">
-    <h1>Final ranking</h1>
+    <h1 class="step">Step 3: Color ranking</h1>
     <div id="final_ranking"></div>
-    <h2>Criteria and research explanation</h2>
+	<ol class="ranking">
+      <li>Low</li
+      ><li></li
+      ><li>High</li>
+	</ol>
+    <div id="example_text">This is your text</div>
+    <h2> ColoUR A/Symmetry Tool is a color ranking tool based on three criteria: color contrast, subjective preference and objective preference. <p>
+    The contrast was calculated according to recommendations of the WCAG standard. <p>
+    Subjective and objective preference of color sets have been experimentally tested on a group of users, where data was gathered on colors friendliness and visibility as well as user reaction time.</h2>
   </div>
   <script>
+    const config = {
+      wcagContrastWeights:   [0, 1, 2, 3],
+      userPreferenceWeights: [0, 1, 2, 3],
+      userAttentionWeights:  [0, 1, 2, 3]
+    }
+
     const state = {
       primaryColors: primaryColors(),
       background: true,
       criteria: {
+        wcagContrastEnabled: true,
+        wcagContrastLevel: 3,
         userPreferenceEnabled: true,
         userPreferenceLevel: 3,
         userAttentionEnabled: true,
-        userAttentionLevel: 2,
-        wcagContrastEnabled: true,
-        wcagContrastLevel: 1
+        userAttentionLevel: 3
       }
     };
 
@@ -211,8 +284,8 @@
       document.querySelectorAll(".criterion input[type=range]").forEach(el => el.addEventListener("input", onCriterionInput));
 
       drawPrimaryColors();
-      document.getElementById("bgfg_bg").checked = state.background;
-      document.getElementById("bgfg_fg").checked = !state.background;
+      // document.getElementById("bgfg_bg").checked = state.background;
+      // document.getElementById("bgfg_fg").checked = !state.background;
       drawCriteria();
     }
 
@@ -220,6 +293,9 @@
       const id = event.target.id;
       const parentId = event.target.parentNode.id;
       const grandParentId = event.target.parentNode ? event.target.parentNode.parentNode.id : "";
+      const classes = event.target.classList;
+      const parentClasses = event.target.parentNode.classList;
+      console.log(44, event.target);
 
       if (parentId === "primary_colors") {
         onPrimaryColorClick(event);
@@ -243,6 +319,10 @@
           }
           drawFinalRanking();
         }, 1); // setTimeout used so .checked property gets set
+      } else if (parentClasses.contains("final-ranking")) {
+      	document.getElementById("example_text").style.color = event.target.parentNode.style.color;
+      } else if (classes.contains("final-ranking")) {
+      	document.getElementById("example_text").style.color = event.target.style.color;
       }
     }
 
@@ -288,6 +368,16 @@ violet=125,0,255
         str = str.replaceAll(key, dic[key]);
       });
       return str;
+    }
+
+    function reverseDictionary(str) {
+      if (Array.isArray(str)) str = str.join(",");
+      const dic = dictionary();
+      let res;
+      Object.keys(dic).forEach(key => {
+        if (dic[key] === str) res = key;
+      });
+      return res;
     }
 
     function primaryColors() {
@@ -345,35 +435,153 @@ violet
       document.querySelector(`#criterion_wcag_contrast li:nth-child(${state.criteria.wcagContrastLevel})`).classList.add("active");
     }
 
-    function finalRanking() {
-      // TODO use state to calculate final ranking
-      console.log(state);
-      return applyDictionary(`
-black
-green
-yellow
-blue
-gray
-violet
-red
-orange
-      `).trim()
+    function csv() {
+      let csv = `
+;;contrast;preferencje;et
+black;;;;
+;blue;   -0.1456;   -0.0029;    0.3987
+;violet;   -0.0902;   -0.1100;   -0.4791
+;red;    0.0330;    0.1205;    0.2517
+;gray;    0.1747;   -0.6684;   -0.2932
+;orange;    0.2116;   -0.2867;   -0.0813
+;green;    0.6489;    0.2487;    0.8067
+;yellow;    0.9138;    0.3060;   -0.2555
+;white;    1.0000;    0.3929;   -0.0527
+blue;;;;
+;violet;   -0.2072;   -1.0000;   -0.4190
+;red;   -0.1641;   -0.0292;    0.1685
+;black;   -0.1456;    0.0060;    0.1957
+;gray;   -0.1025;   -0.5213;   -0.6723
+;orange;   -0.0902;   -0.0714;    0.0286
+;green;    0.0946;    0.3846;    0.1062
+;yellow;    0.1993;    0.5747;    0.2220
+;white;    0.2363;    0.6567;   -0.2606
+gray;;;;
+;orange;   -0.2257;   -0.2588;   -0.1710
+;red;   -0.2072;   -0.1338;    0.1216
+;green;   -0.1702;    0.4432;    0.4101
+;violet;   -0.1518;   -0.6314;   -0.1707
+;yellow;   -0.1333;    0.5388;    0.0532
+;white;   -0.1210;    0.5275;    0.1531
+;blue;   -0.1025;   -0.3026;    0.0603
+;black;    0.1747;   -0.1830;    0.1492
+green;;;;
+;yellow;   -0.2133;   -0.7385;   -0.0122
+;white;   -0.2072;    0.2187;   -0.1586
+;orange;   -0.1764;   -0.5739;   -0.3643
+;gray;   -0.1702;   -0.1765;   -0.5767
+;red;   -0.1148;    0.1925;   -0.0763
+;violet;   -0.0101;    0.2746;   -0.0842
+;blue;    0.0946;    0.5195;    0.1412
+;black;    0.6489;    0.2835;    0.0422
+orange;;;;
+;gray;   -0.2257;   -0.5398;    0.1518
+;red;   -0.1949;   -0.7219;    0.0073
+;green;   -0.1764;    0.0493;    0.2815
+;yellow;   -0.1456;    0.3143;    0.2550
+;violet;   -0.1394;   -0.0979;   -0.3258
+;white;   -0.1333;    0.5833;    0.0633
+;blue;   -0.0902;    0.2230;   -0.0874
+;black;    0.2116;    0.1897;    0.0209
+red;;;;
+;gray;   -0.2072;   -0.5869;   -0.0061
+;orange;   -0.1949;   -0.7358;   -0.0567
+;violet;   -0.1949;   -0.2583;   -0.2579
+;blue;   -0.1641;    0.0311;   -0.0835
+;green;   -0.1148;    0.2959;   -0.3264
+;yellow;   -0.0655;    0.4800;    0.3292
+;white;   -0.0470;    0.6606;    0.2955
+;black;    0.0330;    0.1135;   -0.1841
+violet;;;;
+;blue;   -0.2072;   -0.9681;    0.0044
+;red;   -0.1949;   -0.0337;   -0.2564
+;gray;   -0.1518;   -0.5894;   -0.0797
+;orange;   -0.1394;   -0.1251;    0.0345
+;black;   -0.0902;    0.1378;    0.1683
+;green;   -0.0101;    0.3810;    0.0862
+;yellow;    0.0700;    0.5269;    0.5925
+;white;    0.0946;    0.6707;   -0.1160
+white;;;;
+;yellow;   -0.2257;   -0.5896;    0.6174
+;green;   -0.2072;   -0.2506;    0.2014
+;orange;   -0.1333;   -0.3038;    0.0154
+;gray;   -0.1210;   -0.3633;    0.1690
+;red;   -0.0470;    0.3120;   -0.0073
+;violet;    0.0946;    0.2852;   -0.1850
+;blue;    0.2363;    0.5347;    0.3591
+;black;    1.0000;    0.3755;    0.1179
+yellow;;;;
+;white;   -0.2257;   -0.4449;   -0.0322
+;green;   -0.2133;   -0.7757;    0.0265
+;orange;   -0.1456;   -0.4816;    0.1308
+;gray;   -0.1333;   -0.0719;   -0.5567
+;red;   -0.0655;    0.2991;    0.3881
+;violet;    0.0700;    0.3992;    0.6728
+;blue;    0.1993;    0.6144;    0.3345
+;black;    0.9138;    0.4615;   -0.0374
+      `.trim()
       .split("\n")
-      .reduce((colors, line) => {
-          const l = line.split(",");
-          colors.push([1.0 * l[0], 1.0 * l[1], 1.0 * l[2]]);
-          return colors;
-        }, []);
+      .map(row => row.split(";"))
+      .map(row => [row[0].trim(),
+        row[1].trim(),
+        row[2].trim() * 1.0,
+        row[3].trim() * 1.0,
+        row[4].trim() * 1.0
+      ]);
+
+      csv.shift(); // remove first element (which is header)
+      let primary;
+      csv.forEach(row => {
+        if (row[0])
+          primary = row[0]
+        else
+          row[0] = primary;
+      });
+
+      csv = csv.filter(row => row[1]);
+
+      return csv;
+    }
+
+    function finalRanking() {
+      // console.log(state);
+      const primary = reverseDictionary(state.activePrimaryColor);
+      let data = csv().filter(row => row[0] === primary);
+
+      const wcagContrastWeight = config.wcagContrastWeights[state.criteria.wcagContrastEnabled ? state.criteria.wcagContrastLevel : 0]; // 2
+      const userPreferenceWeight = config.userPreferenceWeights[state.criteria.userPreferenceEnabled ? state.criteria.userPreferenceLevel : 0]; // 3
+      const userAttentionWeight = config.userAttentionWeights[state.criteria.userAttentionEnabled ? state.criteria.userAttentionLevel : 0]; // 4
+
+      data.forEach(row => row[5] = wcagContrastWeight * row[2] + userPreferenceWeight * row[3] + userAttentionWeight * row[4]);
+
+      data = data.sort((row1, row2) => row1[5] - row2[5])
+        // .reverse()
+        .map(row => row[1])
+        .join("\n");
+
+      return applyDictionary(data).trim()
+        .split("\n")
+        .reduce((colors, line) => {
+            const l = line.split(",");
+            colors.push([1.0 * l[0], 1.0 * l[1], 1.0 * l[2]]);
+            return colors;
+          }, []);
     }
 
     function drawFinalRanking() {
       let html = "";
       state.finalRanking = finalRanking();
       state.finalRanking.forEach(color => {
-        html += `<div class="final-ranking" style="background: rgb(${color[0]}, ${color[1]}, ${color[2]});
-            color: rgb(${state.activePrimaryColor[0]}, ${state.activePrimaryColor[1]}, ${state.activePrimaryColor[2]})"><i class="fa fa-envelope"></i></div>`;
+        html += `<div class="final-ranking" style="color: rgb(${color[0]}, ${color[1]}, ${color[2]})"><i class="fa fa-envelope"></i></div>`;
       });
-      document.getElementById("final_ranking").innerHTML = html;
+      const finalRankingDiv = document.getElementById("final_ranking");
+      finalRankingDiv.innerHTML = html;
+      finalRankingDiv.style = `background: rgb(${state.activePrimaryColor[0]}, ${state.activePrimaryColor[1]}, ${state.activePrimaryColor[2]})`;
+
+      const exampleText = document.getElementById("example_text");
+      const best = state.finalRanking[state.finalRanking.length - 1];
+      exampleText.style = `background: rgb(${state.activePrimaryColor[0]}, ${state.activePrimaryColor[1]}, ${state.activePrimaryColor[2]});
+      	color: rgb(${best[0]}, ${best[1]}, ${best[2]})`;
     }
   </script>
 </body>
